@@ -1,8 +1,9 @@
-import {User} from "@/types/user";
 import {Row} from "@/component/user/List/Row";
+import {useUsers} from "@/provider/Users";
 
-export const List= ({users}: {users: User[]}) => {
+export const List= () => {
   console.log('List render');
+  const users = useUsers();
   return (
     <ul>
       { users.map((user) => (
