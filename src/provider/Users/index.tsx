@@ -9,74 +9,69 @@ const log = (...args: any) => console.log('%c[UserReducer log]:', 'color: orange
 export const UserReducer = (users: User[], action: UserAction): User[] => {
   log('users: ', users, 'action: ', action);
 
-  const {
-    id,
-    user
-  } = action.payload;
-
   switch(action.type) {
     case 'add': {
-      if (!user || !user.name) {
+      if (!action.payload || !action.payload.name) {
         log('User data was not provided, operation - add')
 
         return users;
       }
 
-      if (users.find(({name}) => name === user?.name)) {
-        log(`User with name ${user?.name} is already exist`);
+      if (users.find(({name}) => name === action.payload?.name)) {
+        log(`User with name ${action.payload?.name} is already exist`);
 
         // TODO Подумать нужно ли возвращать новую ссылку, если по факту ниче не поменялось
         return users;
       }
 
-      log(`User with name ${user?.name} was added`);
+      log(`User with name ${action.payload?.name} was added`);
 
       return [
         ...users, {
-          ...user,
-          id: getId(user)
+          ...action.payload,
+          id: getId(action.payload)
         }
       ];
     }
     case 'remove': {
-      if (!id) {
+      if (!action.payload) {
         log('Id was not provided, operation - remove');
 
         return users;
       }
 
-      if (users.find(({id: userId}) => userId === id)) {
-        log(`User with id ${id} was removed`);
+      if (users.find(({id: userId}) => userId === action.payload)) {
+        log(`User with id ${action.payload} was removed`);
 
-        return users.filter(({id: userId}) => userId !== id);
+        return users.filter(({id: userId}) => userId !== action.payload);
       }
 
-      log(`User with id ${id} doesnt exist`);
+      log(`User with id ${action.payload} doesnt exist`);
 
       return users;
     }
     case 'edit': {
-      if (!id || !user) {
+      if (!action.payload.id || !action.payload.user) {
         log('Id or user data was not provided, operation - edit');
 
         return users;
       }
 
-      const index = users.findIndex(({id: userId}) => userId === id);
+      const index = users.findIndex(({id: userId}) => userId === action.payload.id);
 
       if (index === -1) {
-        log(`User with id ${id} doesnt exist`);
+        log(`User with id ${action.payload.id} doesnt exist`);
 
         return users;
       }
 
       const newUsers = [...users];
       newUsers[index] = {
-        id,
-        ...user
+        id: action.payload.id,
+        ...action.payload.user
       }
 
-      log(`User with id ${id} was updated`);
+      log(`User with id ${action.payload.id} was updated`);
 
       return newUsers;
     }
@@ -98,15 +93,11 @@ export const useUsersActions = () => {
   return {
     add: ({user}: {user: UserData}) => dispatch({
       type: 'add',
-      payload: {
-        user
-      }
+      payload: user
     }),
     remove: ({id}: {id: string}) => dispatch({
       type: 'remove',
-      payload: {
-        id
-      }
+      payload: id
     }),
     edit: ({user, id}: {user: UserData, id: string}) => dispatch({
       type: 'edit',

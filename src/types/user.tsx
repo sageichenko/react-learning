@@ -6,10 +6,16 @@ export interface User extends UserData {
   id: string;
 }
 
-export interface UserAction {
-  type: string,
+export type UserAction = {
+  type: 'add';
+  payload: UserData;
+} | {
+  type: 'remove';
+  payload: string
+} | {
+  type: 'edit';
   payload: {
-    user?: UserData,
-    id?: string;
+    id: string;
+    user: UserData
   }
 }
