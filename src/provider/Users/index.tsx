@@ -1,3 +1,5 @@
+'use client'
+
 import {Dispatch, ReactNode, useContext, useEffect, useReducer} from "react";
 import {createContext} from 'react';
 import {User, UserAction, UserData} from "@/types/user";
@@ -109,7 +111,6 @@ export const useUsersActions = () => {
   }
 }
 
-// TODO По идее useReducer можно использовать только на клиенте, не очень понятно как тогда рисовать подобные компоненте на сервере
 export const Provider = ({children}: {children: ReactNode}) => {
   const [users, dispatch] = useReducer<(users: User[], action: UserAction) => User[]>(UserReducer, []);
 
