@@ -22,7 +22,6 @@ export const UserReducer = (users: User[], action: UserAction): User[] => {
       if (users.find(({name}) => name === action.payload?.name)) {
         log(`User with name ${action.payload?.name} is already exist`);
 
-        // TODO Подумать нужно ли возвращать новую ссылку, если по факту ниче не поменялось
         return users;
       }
 
