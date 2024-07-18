@@ -1,4 +1,4 @@
-import {ReactNode, useContext, useEffect, useReducer} from "react";
+import {Dispatch, ReactNode, useContext, useEffect, useReducer} from "react";
 import {createContext} from 'react';
 import {User, UserAction, UserData} from "@/types/user";
 
@@ -85,8 +85,8 @@ export const UserReducer = (users: User[], action: UserAction): User[] => {
     }
   }
 }
-export const UsersContext = createContext([] as User[]);
-export const UsersActionContext = createContext(() => []);
+export const UsersContext = createContext<User[]>([]);
+export const UsersActionContext = createContext<Dispatch<UserAction>>(() => []);
 
 export const useUsers = () => {
   return useContext(UsersContext);
@@ -95,7 +95,6 @@ export const useUsers = () => {
 export const useUsersActions = () => {
   const dispatch = useContext(UsersActionContext);
 
-  // TODO: Разобраться почему возникает ошибка TS2554: Expected 0 arguments, but got 1
   return {
     add: ({user}: {user: UserData}) => dispatch({
       type: 'add',
@@ -121,9 +120,8 @@ export const useUsersActions = () => {
 
 // TODO По идее useReducer можно использовать только на клиенте, не очень понятно как тогда рисовать подобные компоненте на сервере
 export const Provider = ({children}: {children: ReactNode}) => {
-  const [users, dispatch] = useReducer(UserReducer, []);
+  const [users, dispatch] = useReducer<(users: User[], action: UserAction) => User[]>(UserReducer, []);
 
-  // TODO Разобраться с TS2322: Type Dispatch<UserAction> is not assignable to type () => never[]
   useEffect(() => {
     console.log('users', users);
   }, [users]);
