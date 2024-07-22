@@ -7,6 +7,9 @@ export interface User extends UserData {
 }
 
 export type UserAction = {
+  type: 'init';
+  payload: User[];
+} | {
   type: 'add';
   payload: UserData;
 } | {

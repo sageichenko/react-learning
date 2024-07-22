@@ -1,8 +1,15 @@
 import {User, UserData} from "@/types/user";
-import {useUsersActions} from "@/provider/Users";
-import {FormEvent, useState} from "react";
+import {FormEvent, useEffect, useState} from "react";
 
-export const Row = ({user}: {user: User}) => {
+export const Row = ({
+  user,
+  onRemove,
+  onEdit,
+}: Readonly<{
+  user: User,
+  onRemove?: (id: string) => void;
+  onEdit?: (id: string, user: UserData) => void
+}>) => {
   const {
     id,
     name
@@ -11,7 +18,10 @@ export const Row = ({user}: {user: User}) => {
   console.log('Row render', name);
 
   const [newUser, setNewUser] = useState<UserData>({name});
-  const { remove, edit } = useUsersActions();
+
+  useEffect(() => {
+    setNewUser(user)
+  }, [user]);
 
   return (
     <div>
@@ -20,23 +30,20 @@ export const Row = ({user}: {user: User}) => {
         type="text"
         onInput={(event: FormEvent<HTMLInputElement>) => setNewUser({name: event.currentTarget.value.trim()})}
       />
-      <button
-        disabled={ newUser.name === name }
-        onClick={ () => edit({
-          id: id,
-          user: {
-            name: newUser.name,
-          }
-        }) }
-      >
-        edit
-      </button>
-      <button onClick={ () => remove( {
-        id: id
-      }) }
-      >
-        remove
-      </button>
+      { Boolean(onEdit) && (
+          <button
+            disabled={ newUser.name === name }
+            onClick={ () => onEdit && onEdit(id, newUser) }
+          >
+            edit
+          </button>
+      ) }
+      { Boolean(onRemove) && (
+        <button onClick={ () => onRemove && onRemove(id) }
+        >
+          remove
+        </button>
+      ) }
     </div>
   );
 }

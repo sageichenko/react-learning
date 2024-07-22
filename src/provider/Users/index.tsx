@@ -12,6 +12,11 @@ export const UserReducer = (users: User[], action: UserAction): User[] => {
   log('users: ', users, 'action: ', action);
 
   switch(action.type) {
+    case 'init': {
+      return [
+        ...action.payload
+      ];
+    }
     case 'add': {
       if (!action.payload || !action.payload.name) {
         log('User data was not provided, operation - add')
@@ -92,6 +97,10 @@ export const useUsersActions = () => {
   const dispatch = useContext(UsersActionContext);
 
   return {
+    init: ({users}: {users: User[]}) => dispatch({
+      type: 'init',
+      payload: users
+    }),
     add: ({user}: {user: UserData}) => dispatch({
       type: 'add',
       payload: user
